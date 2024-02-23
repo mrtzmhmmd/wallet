@@ -25,8 +25,9 @@ public class Wallet {
     private String walletId;
     @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL)
     private List<Transaction> transactions;
-    private Long userId;
-    private BigDecimal amount;
+    @Column(unique = true)
+    private String userId;
+    private BigDecimal balance;
     @CreationTimestamp
     private LocalDate createdAt;
     @UpdateTimestamp
