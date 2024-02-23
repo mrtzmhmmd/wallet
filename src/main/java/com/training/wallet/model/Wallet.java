@@ -6,7 +6,6 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -26,8 +25,8 @@ public class Wallet {
     @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL)
     private List<Transaction> transactions;
     @Column(unique = true)
-    private String userId;
-    private BigDecimal balance;
+    private Integer userId;
+    private Integer balance;
     @CreationTimestamp
     private LocalDate createdAt;
     @UpdateTimestamp

@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -45,13 +44,12 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public BalanceDto getBalanceByUserId(String userId) {
+    public BalanceDto getBalanceByUserId(Integer userId) {
         Wallet wallet = walletRepository.findByUserId(userId)
                 .orElseThrow(() ->
                         new NoSuchElementException("Not found wallet with this user id: " +
                                 userId));
-
-        BigDecimal balance = wallet.getBalance();
+        Integer balance = wallet.getBalance();
         return BalanceDto.builder()
                 .balance(balance)
                 .build();

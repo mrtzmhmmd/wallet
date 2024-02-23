@@ -5,7 +5,6 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -23,7 +22,8 @@ public class Transaction {
     @ManyToOne
     @JoinColumn(name = "wallet_id")
     private Wallet wallet;
-    private BigDecimal amount;
+    private Integer amount;
+    private boolean status;
     @CreationTimestamp
     private LocalDate createdAt;
     @UpdateTimestamp

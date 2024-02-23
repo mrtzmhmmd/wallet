@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1/wallet/")
 public class WalletController {
     private final WalletService walletService;
 
@@ -23,8 +23,8 @@ public class WalletController {
         return new ResponseEntity<>(result.isResult(), result.getHttpStatus());
     }
 
-    @GetMapping
-    public ResponseEntity<BalanceDto> getBalanceByUserId(@RequestParam String userId) {
+    @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
+    public ResponseEntity<BalanceDto> getBalanceByUserId(@PathVariable Integer userId) {
         BalanceDto balanceDto = walletService.getBalanceByUserId(userId);
         return new ResponseEntity<>(balanceDto, HttpStatus.FOUND);
     }

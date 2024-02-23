@@ -1,6 +1,5 @@
 package com.training.wallet.dto.request;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class WalletDto {
-    @NotNull(message = "user id is empty")
+public class TransactionDto {
     private Integer userId;
+    private Integer amount;
 }
