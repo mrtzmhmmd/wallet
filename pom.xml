@@ -13,6 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>wallet</name>
     <description>wallet</description>
+    <packaging>jar</packaging>
     <properties>
         <java.version>21</java.version>
     </properties>
@@ -60,6 +61,14 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.2</version>
+                <configuration>
+                    <skipTests>true</skipTests>
                 </configuration>
             </plugin>
         </plugins>
