@@ -3,7 +3,6 @@ package com.training.wallet.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 
@@ -26,6 +25,4 @@ public class Transaction {
     private boolean status;
     @CreationTimestamp
     private LocalDate createdAt;
-    @UpdateTimestamp
-    private LocalDate modifiedAt;
 }
