@@ -1,6 +1,6 @@
 package com.training.wallet.controller;
 
-import com.training.wallet.dto.request.WalletDto;
+import com.training.wallet.dto.request.RequestWalletDto;
 import com.training.wallet.dto.response.BalanceDto;
 import com.training.wallet.dto.response.WalletCreateDto;
 import com.training.wallet.service.WalletService;
@@ -18,7 +18,7 @@ public class WalletController {
     }
 
     @PostMapping("save")
-    public ResponseEntity<Boolean> createWallet(@RequestBody WalletDto walletDto) {
+    public ResponseEntity<Boolean> createWallet(@RequestBody RequestWalletDto walletDto) {
         WalletCreateDto result = walletService.createWallet(walletDto);
         return new ResponseEntity<>(result.isResult(), result.getHttpStatus());
     }

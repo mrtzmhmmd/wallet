@@ -1,16 +1,16 @@
 package com.training.wallet.service.impl;
 
-import com.training.wallet.dto.request.WalletDto;
+import com.training.wallet.domain.model.Wallet;
+import com.training.wallet.dto.request.RequestWalletDto;
 import com.training.wallet.dto.response.BalanceDto;
 import com.training.wallet.dto.response.WalletCreateDto;
-import com.training.wallet.model.Wallet;
 import com.training.wallet.repository.WalletRepository;
 import com.training.wallet.service.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.NoSuchElementException;
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -24,7 +24,7 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public WalletCreateDto createWallet(WalletDto walletDto) {
+    public WalletCreateDto createWallet(RequestWalletDto walletDto) {
         Optional<Wallet> optionalWallet = walletRepository.findByUserId(walletDto.getUserId());
         if(optionalWallet.isPresent()) {
             return WalletCreateDto.builder()
@@ -34,6 +34,7 @@ public class WalletServiceImpl implements WalletService {
         }
         Wallet wallet = Wallet.builder()
                 .userId(walletDto.getUserId())
+                .balance(BigDecimal.ZERO)
                 .build();
         walletRepository.save(wallet);
         return WalletCreateDto.builder()
@@ -45,13 +46,15 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     public BalanceDto getBalanceByUserId(Integer userId) {
-        Wallet wallet = walletRepository.findByUserId(userId)
-                .orElseThrow(() ->
-                        new NoSuchElementException("Not found wallet with this user id: " +
-                                userId));
-        Integer balance = wallet.getBalance();
+        Optional<Wallet> optionalWallet = walletRepository.findByUserId(userId);
+        if(optionalWallet.isPresent()) {
+            return BalanceDto.builder()
+                    .balance(optionalWallet.get().getBalance())
+                    .httpStatus(HttpStatus.OK)
+                    .build();
+        }
         return BalanceDto.builder()
-                .balance(balance)
+                .httpStatus(HttpStatus.NOT_FOUND)
                 .build();
     }
 }

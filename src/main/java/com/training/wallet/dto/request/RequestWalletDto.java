@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class WalletDto {
+public class RequestWalletDto {
     @NotNull(message = "user id is empty")
     private Integer userId;
 }
