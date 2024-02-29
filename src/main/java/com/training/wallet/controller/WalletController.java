@@ -26,6 +26,6 @@ public class WalletController {
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
     public ResponseEntity<BalanceDto> getBalanceByUserId(@PathVariable Integer userId) {
         BalanceDto balanceDto = walletService.getBalanceByUserId(userId);
-        return new ResponseEntity<>(balanceDto, HttpStatus.FOUND);
+        return new ResponseEntity<>(balanceDto, balanceDto.getHttpStatus());
     }
 }
