@@ -46,8 +46,12 @@ public class TransactionServiceImpl implements TransactionService {
                         "Wallet doesn't have sufficient balance");
             } else {
                 BigDecimal newBalance = balance.add(amount);
-                String transactionId = updateWalletAndSaveTransaction(wallet, newBalance, amount, TransactionType.WITHDRAWAL);
-                LOGGER.info("Transaction committed. user id: '{}', balance: {}", transactionDto.getUserId(), String.valueOf(newBalance));
+                String transactionId = updateWalletAndSaveTransaction(wallet,
+                        newBalance,
+                        amount,
+                        TransactionType.WITHDRAWAL);
+                LOGGER.info("Transaction committed. withdraw user id: '{}', balance: {}, amount: {}",
+                        transactionDto.getUserId(), String.valueOf(newBalance), amount);
                 return buildResponse(HttpStatus.OK, transactionId);
             }
         }
@@ -56,7 +60,8 @@ public class TransactionServiceImpl implements TransactionService {
                 newBalance,
                 amount,
                 TransactionType.DEPOSIT);
-        LOGGER.info("Transaction committed. user id: '{}', balance: {}", transactionDto.getUserId(), String.valueOf(newBalance));
+        LOGGER.info("Transaction committed. deposit user id: '{}', balance: {}, amount: {}",
+                transactionDto.getUserId(), String.valueOf(newBalance), amount);
         return buildResponse(HttpStatus.OK, transactionId);
     }
 

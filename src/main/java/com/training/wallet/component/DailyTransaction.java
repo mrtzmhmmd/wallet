@@ -1,18 +1,21 @@
 package com.training.wallet.component;
 
-import com.training.wallet.model.Transaction;
+import ch.qos.logback.classic.Logger;
+import com.training.wallet.domain.model.Transaction;
 import com.training.wallet.repository.TransactionRepository;
-import lombok.extern.slf4j.Slf4j;
+import com.training.wallet.service.impl.WalletServiceImpl;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Component
-@Slf4j
 public class DailyTransaction {
+
+    private final Logger LOGGER = (Logger) LoggerFactory.getLogger(WalletServiceImpl.class);
 
     private final TransactionRepository transactionRepository;
 
@@ -23,11 +26,12 @@ public class DailyTransaction {
 
     @Scheduled(cron = "0 0 0 * * ?")
     public void calculateTotalTransactions() {
-        LocalDate now = LocalDate.now();
-        List<Transaction> transactionList = transactionRepository.findByCreatedAtAndStatus(now, true);
-        int totalAmount = transactionList.stream()
-                .mapToInt(Transaction::getAmount)
-                .sum();
-        log.info("Daily amount is: " + totalAmount);
+        List<Transaction> transactionList = transactionRepository.findByCreatedAtToday();
+
+        BigDecimal totalBalanceOfDay = transactionList
+                .stream()
+                .map(Transaction::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        LOGGER.info("Daily amount is: " + totalBalanceOfDay);
     }
 }
