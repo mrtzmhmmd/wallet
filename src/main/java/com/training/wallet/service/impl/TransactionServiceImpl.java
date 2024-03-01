@@ -1,5 +1,6 @@
 package com.training.wallet.service.impl;
 
+import ch.qos.logback.classic.Logger;
 import com.training.wallet.domain.enums.TransactionType;
 import com.training.wallet.dto.request.TransactionDto;
 import com.training.wallet.dto.response.TransactionResponseDto;
@@ -8,6 +9,7 @@ import com.training.wallet.domain.model.Wallet;
 import com.training.wallet.repository.TransactionRepository;
 import com.training.wallet.repository.WalletRepository;
 import com.training.wallet.service.TransactionService;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,8 @@ import java.util.Optional;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
+
+    private final Logger LOGGER = (Logger) LoggerFactory.getLogger(WalletServiceImpl.class);
     private final WalletRepository walletRepository;
     private final TransactionRepository transactionRepository;
 
@@ -28,6 +32,7 @@ public class TransactionServiceImpl implements TransactionService {
     public TransactionResponseDto addBalance(TransactionDto transactionDto) {
         Optional<Wallet> optionalWallet = walletRepository.findByUserId(transactionDto.getUserId());
         if (optionalWallet.isEmpty()) {
+            LOGGER.error("user id: '{}' doesn't have wallet", transactionDto.getUserId());
             return buildResponse(HttpStatus.NOT_FOUND,
                     "Not found wallet with user id: " + transactionDto.getUserId());
         }
@@ -36,11 +41,13 @@ public class TransactionServiceImpl implements TransactionService {
         BigDecimal amount = transactionDto.getAmount();
         if (amount.compareTo(BigDecimal.ZERO) < 0) {
             if(balance.compareTo(amount.abs()) < 0) {
+                LOGGER.error("user id: '{}' doesn't have sufficient balance", transactionDto.getUserId());
                 return buildResponse(HttpStatus.BAD_REQUEST,
-                        "Wallet doesn't have sufficient amount");
+                        "Wallet doesn't have sufficient balance");
             } else {
                 BigDecimal newBalance = balance.add(amount);
                 String transactionId = updateWalletAndSaveTransaction(wallet, newBalance, amount, TransactionType.WITHDRAWAL);
+                LOGGER.info("Transaction committed. user id: '{}', balance: {}", transactionDto.getUserId(), String.valueOf(newBalance));
                 return buildResponse(HttpStatus.OK, transactionId);
             }
         }
@@ -49,6 +56,7 @@ public class TransactionServiceImpl implements TransactionService {
                 newBalance,
                 amount,
                 TransactionType.DEPOSIT);
+        LOGGER.info("Transaction committed. user id: '{}', balance: {}", transactionDto.getUserId(), String.valueOf(newBalance));
         return buildResponse(HttpStatus.OK, transactionId);
     }
 

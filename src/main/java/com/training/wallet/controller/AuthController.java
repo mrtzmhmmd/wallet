@@ -1,8 +1,8 @@
 package com.training.wallet.controller;
 
+import ch.qos.logback.classic.Logger;
 import com.training.wallet.domain.records.LoginRequest;
 import com.training.wallet.service.TokenService;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/auth/")
 public class AuthController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
+
+    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(AuthController.class);
     private final TokenService tokenService;
     private final AuthenticationManager authenticationManager;
 
@@ -29,9 +30,9 @@ public class AuthController {
     @PostMapping("/token")
     public String token(@RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.username(), loginRequest.password()));
-        LOGGER.debug("Token requested for user: '{}'", authentication.getName());
+        LOGGER.info("Token requested for user: '{}'", authentication.getName());
         String token = tokenService.generateToken(authentication);
-        LOGGER.debug("Token granted {}", token);
+        LOGGER.info("Token granted {}", token);
         return token;
     }
 }
