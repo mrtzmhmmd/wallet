@@ -23,7 +23,7 @@ public class TransactionController {
 
     @PostMapping("/add-amount")
     public ResponseEntity<String> addAmount(@RequestBody TransactionDto transactionDto) {
-        TransactionResponseDto transactionResponseDto = transactionService.addBalance(transactionDto);
+        TransactionResponseDto transactionResponseDto = transactionService.executeTransaction(transactionDto);
         return new ResponseEntity<>(transactionResponseDto.getMessage(), transactionResponseDto.getHttpStatus());
     }
 }
