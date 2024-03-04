@@ -1,6 +1,6 @@
 package com.training.wallet.dto.request;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequestWalletDto {
-    @NotNull(message = "user id is empty")
-    private Integer userId;
+    @NotBlank(message = "Email should not be empty")
+    private String email;
 }

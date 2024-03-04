@@ -21,7 +21,7 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    @PostMapping("/add-amount")
+    @PostMapping("/change-balance")
     public ResponseEntity<String> addAmount(@RequestBody TransactionDto transactionDto) {
         TransactionResponseDto transactionResponseDto = transactionService.executeTransaction(transactionDto);
         return new ResponseEntity<>(transactionResponseDto.getMessage(), transactionResponseDto.getHttpStatus());

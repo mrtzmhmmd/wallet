@@ -17,6 +17,9 @@
             <maxHistory>30</maxHistory>
         </rollingPolicy>
     </appender>
+    <logger name="org.hibernate" level="ERROR" additivity="false">
+        <appender-ref ref="FILE"/>
+    </logger>
     <logger name="com.training.wallet" level="INFO" additivity="false">
         <appender-ref ref="FILE"/>
     </logger>

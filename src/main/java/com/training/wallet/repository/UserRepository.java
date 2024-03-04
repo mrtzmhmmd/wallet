@@ -1,14 +1,13 @@
 package com.training.wallet.repository;
 
 import com.training.wallet.domain.model.User;
-import com.training.wallet.domain.model.Wallet;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface WalletRepository extends JpaRepository<Wallet, Long> {
-    Optional<Wallet> findByUser(User user);
-    Optional<Wallet> findByUserEmail(String userEmail);
+public interface UserRepository extends JpaRepository<User, Long> {
+
+    Optional<User> findByEmail(String email);
 }

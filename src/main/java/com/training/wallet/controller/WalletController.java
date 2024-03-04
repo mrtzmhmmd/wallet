@@ -22,9 +22,9 @@ public class WalletController {
         return new ResponseEntity<>(result.isResult(), result.getHttpStatus());
     }
 
-    @GetMapping(value = "/{userId}")
-    public ResponseEntity<BalanceDto> getBalanceByUserId(@PathVariable Integer userId) {
-        BalanceDto balanceDto = walletService.getBalanceByUserId(userId);
+    @GetMapping(value = "/{userEmail}")
+    public ResponseEntity<BalanceDto> getBalanceByUserEmail(@PathVariable String userEmail) {
+        BalanceDto balanceDto = walletService.getBalanceByUserEmail(userEmail);
         return new ResponseEntity<>(balanceDto, balanceDto.getHttpStatus());
     }
 }

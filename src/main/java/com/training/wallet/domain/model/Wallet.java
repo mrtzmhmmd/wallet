@@ -19,8 +19,12 @@ public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true, nullable = false)
-    private Integer userId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", unique = true,
+            referencedColumnName = "id", nullable = false)
+    private User user;
+
     @Column(nullable = false)
     private BigDecimal balance;
     @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL)

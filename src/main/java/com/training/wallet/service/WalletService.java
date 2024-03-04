@@ -6,5 +6,5 @@ import com.training.wallet.dto.response.WalletCreateDto;
 
 public interface WalletService {
     WalletCreateDto createWallet(RequestWalletDto walletDto);
-    BalanceDto getBalanceByUserId(Integer userId);
+    BalanceDto getBalanceByUserEmail(String userEmail);
 }

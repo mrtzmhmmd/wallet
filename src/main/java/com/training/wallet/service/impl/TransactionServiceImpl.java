@@ -2,10 +2,10 @@ package com.training.wallet.service.impl;
 
 import ch.qos.logback.classic.Logger;
 import com.training.wallet.domain.enums.TransactionType;
-import com.training.wallet.dto.request.TransactionDto;
-import com.training.wallet.dto.response.TransactionResponseDto;
 import com.training.wallet.domain.model.Transaction;
 import com.training.wallet.domain.model.Wallet;
+import com.training.wallet.dto.request.TransactionDto;
+import com.training.wallet.dto.response.TransactionResponseDto;
 import com.training.wallet.repository.TransactionRepository;
 import com.training.wallet.repository.WalletRepository;
 import com.training.wallet.service.TransactionService;
@@ -32,35 +32,35 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public TransactionResponseDto executeTransaction(TransactionDto transactionDto) {
-        Optional<Wallet> optionalWallet = walletRepository.findByUserId(transactionDto.getUserId());
+        Optional<Wallet> optionalWallet = walletRepository.findByUserEmail(transactionDto.userEmail());
         if (optionalWallet.isEmpty()) {
-            LOGGER.error("user with id: '{}' doesn't have wallet", transactionDto.getUserId());
+            LOGGER.error("user with email: '{}' doesn't have wallet", transactionDto.userEmail());
             return buildResponse(HttpStatus.NOT_FOUND,
-                    "Not found wallet with user with id: " + transactionDto.getUserId());
+                    "Not found wallet with user with email: " + transactionDto.userEmail());
         }
         Wallet wallet = optionalWallet.get();
         BigDecimal balance = wallet.getBalance();
-        BigDecimal amount = transactionDto.getAmount();
+        BigDecimal amount = transactionDto.amount();
         if (amount.compareTo(BigDecimal.ZERO) < 0) {
             if(balance.compareTo(amount.abs()) < 0) {
-                LOGGER.error("user with id: '{}' doesn't have sufficient balance", transactionDto.getUserId());
+                LOGGER.error("user with email: '{}' doesn't have sufficient balance", transactionDto.userEmail());
                 return buildResponse(HttpStatus.BAD_REQUEST,
                         "Wallet doesn't have sufficient balance");
             } else {
-                return processTransaction(wallet, balance, amount, TransactionType.WITHDRAWAL, transactionDto.getUserId());
+                return processTransaction(wallet, balance, amount, TransactionType.WITHDRAWAL, transactionDto.userEmail());
             }
         }
-        return processTransaction(wallet, balance, amount, TransactionType.DEPOSIT, transactionDto.getUserId());
+        return processTransaction(wallet, balance, amount, TransactionType.DEPOSIT, transactionDto.userEmail());
     }
 
     private TransactionResponseDto processTransaction(Wallet wallet,
                                                       BigDecimal balance,
                                                       BigDecimal amount,
                                                       TransactionType type,
-                                                      Integer userId) {
+                                                      String userEmail) {
         BigDecimal newBalance = balance.add(amount);
         String transactionId = updateWalletAndSaveTransaction(wallet, newBalance, amount, type);
-        LOGGER.info("Transaction committed. Type: {}, User id: '{}', Balance: {}, Amount: {}", type, userId, newBalance, amount);
+        LOGGER.info("Transaction committed. Type: {}, User email: '{}', Balance: {}, Amount: {}", type, userEmail, newBalance, amount);
         return buildResponse(HttpStatus.OK, transactionId);
     }
     private String updateWalletAndSaveTransaction(Wallet wallet,
