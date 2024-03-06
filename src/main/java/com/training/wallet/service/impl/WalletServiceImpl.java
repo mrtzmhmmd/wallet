@@ -27,9 +27,9 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     public WalletCreateDto createWallet(RequestWalletDto walletDto) {
-        Optional<User> optionalUser = userRepository.findByEmail(walletDto.getEmail());
+        Optional<User> optionalUser = userRepository.findByEmail(walletDto.email());
         if(optionalUser.isEmpty()) {
-            LOGGER.error("user with email: '{}' does not exist", walletDto.getEmail());
+            LOGGER.error("user with email: '{}' does not exist", walletDto.email());
             return WalletCreateDto.builder()
                     .httpStatus(HttpStatus.NOT_FOUND)
                     .result(false)
@@ -37,7 +37,7 @@ public class WalletServiceImpl implements WalletService {
         }
         Optional<Wallet> optionalWallet = walletRepository.findByUser(optionalUser.get());
         if(optionalWallet.isPresent()) {
-            LOGGER.error("user with email: '{}' have wallet", walletDto.getEmail());
+            LOGGER.error("user with email: '{}' have wallet", walletDto.email());
             return WalletCreateDto.builder()
                     .httpStatus(HttpStatus.CONFLICT)
                     .result(false)
