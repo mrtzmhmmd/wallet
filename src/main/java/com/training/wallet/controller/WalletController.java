@@ -17,7 +17,7 @@ public class WalletController {
     }
 
     @PostMapping("save")
-    public ResponseEntity<Boolean> createWallet(@RequestBody RequestWalletDto walletDto) {
+    public ResponseEntity<?> createWallet(@RequestBody RequestWalletDto walletDto) {
         WalletCreateDto result = walletService.createWallet(walletDto);
         return new ResponseEntity<>(result.isResult(), result.getHttpStatus());
     }
