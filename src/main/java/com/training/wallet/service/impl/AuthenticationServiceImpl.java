@@ -15,11 +15,10 @@ import com.training.wallet.service.AuthenticationService;
 import com.training.wallet.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,7 +26,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -39,19 +37,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final Validator validator;
 
     @Override
     public AuthenticationResponse register(RegisterRequest request) {
         Optional<User> optionalUser = userRepository.findByEmail(request.email());
         if(optionalUser.isPresent()) {
             LOGGER.error("email: '{}' exist", request.email());
-            return AuthenticationResponse.builder().message("Email already exists").build();
-        }
-        Set<ConstraintViolation<RegisterRequest>> violations = validator.validate(request);
-        if (!violations.isEmpty()) {
             return AuthenticationResponse.builder()
-                    .message(violations.iterator().next().getMessage())
+                    .message("Email already exists")
+                    .httpStatus(HttpStatus.CONFLICT)
                     .build();
         }
         User user = User
@@ -69,6 +63,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
+                .httpStatus(HttpStatus.CREATED)
                 .build();
     }
 
@@ -88,6 +83,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
+                .httpStatus(HttpStatus.OK)
                 .build();
     }
 

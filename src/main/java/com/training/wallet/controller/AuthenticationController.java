@@ -21,9 +21,10 @@ import java.io.IOException;
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(
+    public ResponseEntity<?> register(
             @RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(authenticationService.register(request));
+        AuthenticationResponse response = authenticationService.register(request);
+        return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
 
     @PostMapping("/authenticate")
