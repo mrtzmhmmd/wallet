@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class WalletCreateDto {
+public class ResponseWalletCreateDto {
     private boolean result;
     private HttpStatus httpStatus;
 }

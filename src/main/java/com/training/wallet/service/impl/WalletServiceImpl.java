@@ -5,7 +5,7 @@ import com.training.wallet.domain.model.User;
 import com.training.wallet.domain.model.Wallet;
 import com.training.wallet.dto.request.RequestWalletDto;
 import com.training.wallet.dto.response.BalanceDto;
-import com.training.wallet.dto.response.WalletCreateDto;
+import com.training.wallet.dto.response.ResponseWalletCreateDto;
 import com.training.wallet.repository.UserRepository;
 import com.training.wallet.repository.WalletRepository;
 import com.training.wallet.service.WalletService;
@@ -26,11 +26,11 @@ public class WalletServiceImpl implements WalletService {
     private final UserRepository userRepository;
 
     @Override
-    public WalletCreateDto createWallet(RequestWalletDto walletDto) {
+    public ResponseWalletCreateDto createWallet(RequestWalletDto walletDto) {
         Optional<User> optionalUser = userRepository.findByEmail(walletDto.email());
         if(optionalUser.isEmpty()) {
             LOGGER.error("user with email: '{}' does not exist", walletDto.email());
-            return WalletCreateDto.builder()
+            return ResponseWalletCreateDto.builder()
                     .httpStatus(HttpStatus.NOT_FOUND)
                     .result(false)
                     .build();
@@ -38,7 +38,7 @@ public class WalletServiceImpl implements WalletService {
         Optional<Wallet> optionalWallet = walletRepository.findByUser(optionalUser.get());
         if(optionalWallet.isPresent()) {
             LOGGER.error("user with email: '{}' have wallet", walletDto.email());
-            return WalletCreateDto.builder()
+            return ResponseWalletCreateDto.builder()
                     .httpStatus(HttpStatus.CONFLICT)
                     .result(false)
                     .build();
@@ -48,9 +48,9 @@ public class WalletServiceImpl implements WalletService {
                 .user(optionalUser.get())
                 .balance(BigDecimal.ZERO)
                 .build();
-        Wallet saveWallet = walletRepository.save(wallet);
-        LOGGER.info("Wallet created successfully: '{}'", saveWallet.getId());
-        return WalletCreateDto.builder()
+        walletRepository.save(wallet);
+        LOGGER.info("Wallet created successfully: '{}'", walletDto.email());
+        return ResponseWalletCreateDto.builder()
                 .httpStatus(HttpStatus.CREATED)
                 .result(true)
                 .build();

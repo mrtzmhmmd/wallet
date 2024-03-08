@@ -1,7 +1,7 @@
 package com.training.wallet.controller;
 
 import com.training.wallet.dto.request.RequestWalletDto;
-import com.training.wallet.dto.response.WalletCreateDto;
+import com.training.wallet.dto.response.ResponseWalletCreateDto;
 import com.training.wallet.service.WalletService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,14 +22,13 @@ public class WalletControllerTest {
     private WalletController walletController;
     @Mock
     private WalletService walletService;
-
     private RequestWalletDto requestWalletDto;
-    private WalletCreateDto createWalletSuccess;
+    private ResponseWalletCreateDto createWalletSuccess;
 
     @BeforeEach
     public void  setUp() {
         requestWalletDto = new RequestWalletDto("morteza@mail.com");
-        createWalletSuccess = new WalletCreateDto(true, HttpStatus.CREATED);
+        createWalletSuccess = new ResponseWalletCreateDto(true, HttpStatus.CREATED);
     }
 
     @Test
