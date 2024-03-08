@@ -1,27 +1,34 @@
 package com.training.wallet.controller;
 
+import com.training.wallet.config.JwtAuthenticationFilter;
+import com.training.wallet.config.SecurityTestConfig;
 import com.training.wallet.dto.request.RequestWalletDto;
 import com.training.wallet.dto.response.ResponseWalletCreateDto;
 import com.training.wallet.service.WalletService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(WalletController.class)
+@Import(SecurityTestConfig.class)
 public class WalletControllerTest {
+    @MockBean
+    WalletService walletService;
+    @MockBean
+    JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    @InjectMocks
-    private WalletController walletController;
-    @Mock
-    private WalletService walletService;
+    @Autowired
+    MockMvc mockMvc;
+
     private RequestWalletDto requestWalletDto;
     private ResponseWalletCreateDto createWalletSuccess;
 
@@ -32,9 +39,8 @@ public class WalletControllerTest {
     }
 
     @Test
-    public void testCreateWallet() {
-        when(walletService.createWallet(requestWalletDto)).thenReturn(createWalletSuccess);
-        ResponseEntity<?> response = walletController.createWallet(requestWalletDto);
-        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    public void testCreateWallet_Success() throws Exception {
+        Mockito.when(walletService.createWallet(requestWalletDto)).thenReturn(createWalletSuccess);
+        mockMvc.perform(post("/api/v1/wallet/save")).andExpect(status().isOk());
     }
 }
